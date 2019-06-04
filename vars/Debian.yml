@@ -1,0 +1,7 @@
+---
+# Repository, keyserver and key id
+__percona_xtrabackup_keyserver: hkp://keyserver.ubuntu.com:80
+__percona_xtrabackup_key_id: 8507EFA5
+__percona_xtrabackup_repository: "deb http://repo.percona.com/apt {{ ansible_facts['distribution_release'] }} main"
+
+__percona_xtrabackup_package: percona-xtrabackup-24

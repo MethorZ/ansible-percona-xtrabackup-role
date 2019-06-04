@@ -1,0 +1,34 @@
+---
+#
+# Setup all required packages
+#
+- block:
+  - name: APT | Install percona apt key repository prerequisites
+    apt:
+      name:
+        - gnupg
+        - ca-certificates
+        - apt-transport-https
+      state: present
+
+  - name: APT | Add the percona apt key
+    apt_key:
+      keyserver: "{{ percona_xtrabackup_keyserver }}"
+      id: "{{ percona_xtrabackup_key_id }}"
+      state: present
+
+  - name: APT | Add the percona repository
+    apt_repository:
+      repo: "{{ percona_xtrabackup_repository }}"
+      state: present
+
+  - name: APT | Updating the apt cache
+    apt:
+      update_cache: yes
+
+  - name: APT | Make sure percona xtrabackup is installed (if configured)
+    apt:
+      name: "{{ percona_xtrabackup_package }}"
+      state: "{{ percona_xtrabackup_packages_mode }}"
+
+  when: percona_xtrabackup_enabled

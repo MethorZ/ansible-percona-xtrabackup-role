@@ -1,0 +1,20 @@
+galaxy_info:
+  role_name: xtrabackup
+  author: MethorZ
+  description: Ansible percona xtrabackup role
+  company: MethorZ
+  license: license (BSD, MIT)
+  min_ansible_version: 2.5
+  platforms:
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - development
+    - percona
+    - mysql
+    - xtrabackup
+    - backup
+    - database
+
+dependencies: []

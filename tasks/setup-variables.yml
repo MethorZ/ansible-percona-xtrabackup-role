@@ -1,0 +1,45 @@
+---
+#
+# Default OS specific variable definitions / defaults
+#
+- block:
+  - name: INCLUDE_VARS | OS specific vars
+    include_vars: "{{ ansible_facts['os_family'] }}.yml"
+
+  - name: FACTS - Define keyserver for Percona MySQL
+    set_fact:
+      percona_xtrabackup_keyserver: "{{ __percona_xtrabackup_keyserver }}"
+    when: percona_xtrabackup_keyserver is not defined
+
+  - name: FACTS - Define key id for Percona MySQL
+    set_fact:
+      percona_xtrabackup_key_id: "{{ __percona_xtrabackup_key_id }}"
+    when: percona_xtrabackup_key_id is not defined
+
+  - name: FACTS - Define repository for Percona MySQL
+    set_fact:
+      percona_xtrabackup_repository: "{{ __percona_xtrabackup_repository }}"
+    when: percona_xtrabackup_repository is not defined
+
+  - name: FACTS - Define Percona XtraBackup package
+    set_fact:
+      percona_xtrabackup_package: "{{ __percona_xtrabackup_package }}"
+    when: percona_xtrabackup_package is not defined
+
+  - name: FACTS - Define Percona XtraBackup days to keep
+    set_fact:
+      percona_xtrabackup_days_to_keep: "{{ percona_xtrabackup_days_to_keep | int - 1 }}"
+
+  - name: FACTS - Define Percona XtraBackup backup command
+    set_fact:
+      percona_xtrabackup_backup_command: "{{ percona_xtrabackup_dir }}/backup.sh >> {{ percona_xtrabackup_dir }}/backup.log 2>&1"
+
+  - name: FACTS - Define Percona XtraBackup cleanup command
+    set_fact:
+      percona_xtrabackup_cleanup_command: "{{ percona_xtrabackup_dir }}/clean.sh >> {{ percona_xtrabackup_dir }}/clean.log 2>&1"
+
+  - name: FACTS - Define Percona binlog backup command
+    set_fact:
+      percona_xtrabackup_binlog_backup_command: "/usr/bin/rsync --size-only --delete-after -av --stats {{ percona_xtrabackup_binary_log_dir }} {{ percona_xtrabackup_dir }}/binlogs/ >> {{ percona_xtrabackup_dir }}/binlogs.log 2>&1"
+
+  when: percona_xtrabackup_enabled

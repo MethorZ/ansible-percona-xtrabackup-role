@@ -1,0 +1,5 @@
+#!/bin/sh
+##
+# Ansible managed file - DO NOT EDIT!
+##
+find {{ percona_xtrabackup_dir }}/20* -type d -mtime +{{ percona_xtrabackup_days_to_keep}} | xargs rm -rf {}
