@@ -3,4 +3,5 @@
 # Ansible managed file - DO NOT EDIT!
 ##
 /usr/bin/innobackupex --user={{ percona_xtrabackup_user }} {{ percona_xtrabackup_dir }}
-
+LATEST_BACKUP=$(ls -td /backup/mysql/20*/ | head -1)
+xtrabackup --prepare --target-dir=$LATEST_BACKUP

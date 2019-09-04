@@ -3,7 +3,7 @@
 percona_xtrabackup_enabled: false
 
 # Packages mode
-percona_xtrabackup_packages_mode: latest
+percona_xtrabackup_packages_mode: present
 
 ##
 # Backup config
