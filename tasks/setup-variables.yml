@@ -40,6 +40,6 @@
 
   - name: FACTS - Define Percona binlog backup command
     set_fact:
-      percona_xtrabackup_binlog_backup_command: "/usr/bin/rsync --size-only --delete-after -av --stats {{ percona_xtrabackup_binary_log_dir }} {{ percona_xtrabackup_dir }}/binlogs/ >> {{ percona_xtrabackup_dir }}/binlogs.log 2>&1"
+      percona_xtrabackup_binlog_backup_command: "/usr/bin/rsync --size-only --delete-after -av --stats {{ percona_xtrabackup_binary_log_dir }}/ {{ percona_xtrabackup_dir }}/binlogs/ >> {{ percona_xtrabackup_dir }}/binlogs.log 2>&1"
 
   when: percona_xtrabackup_enabled
