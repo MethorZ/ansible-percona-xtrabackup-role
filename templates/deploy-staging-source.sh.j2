@@ -1,0 +1,71 @@
+#!/bin/sh
+##
+# Ansible managed file - DO NOT EDIT!
+#
+# Preparation for servers:
+# 1. Copy the staging backup ssh key to the database server: root@136.243.39.135:/home/staging-backup/.ssh/id_rsa_staging_backup /backup/mysql/
+# 2. Deploy the branch and staging environment
+# 3. Cronjob: 0 5 * * 1 /backup/mysql/deploy-staging.sh >> /backup/mysql/deploy-staging.log 2>&1
+#
+##
+
+##
+# Copy latest backup to the staging environment
+##
+
+LATEST_BACKUP=$(ls -td /backup/mysql/20* | head -1)
+DESTINATION_SERVER="136.243.39.135"
+DESTINATION_SERVER_USER="staging-backup"
+KEYFILE="/backup/mysql/id_rsa_staging_backup"
+DESTINATION_SERVER_PATH="/home/staging-backup/branch-backup"
+DESTINATION_SERVER_DUPLICATE="/home/staging-backup/staging-backup"
+
+# Copy the latest backup to destination
+echo "Identified latest backup: ${LATEST_BACKUP}"
+echo "Deleting old backup, should it exist at ${DESTINATION_SERVER_USER}@${DESTINATION_SERVER}:${DESTINATION_SERVER_PATH}/"
+ssh -t -i ${KEYFILE} ${DESTINATION_SERVER_USER}@${DESTINATION_SERVER} "rm -Rf ${DESTINATION_SERVER_PATH}/"
+echo "Copying latest backup with rsync to: ${DESTINATION_SERVER_USER}@${DESTINATION_SERVER}:${DESTINATION_SERVER_PATH}"
+#######scp -r -i ${KEYFILE} ${LATEST_BACKUP}/ ${DESTINATION_SERVER_USER}@${DESTINATION_SERVER}:${DESTINATION_SERVER_PATH}
+rsync -av -e "ssh -i ${KEYFILE}" -z ${LATEST_BACKUP}/ ${DESTINATION_SERVER_USER}@${DESTINATION_SERVER}:${DESTINATION_SERVER_PATH}
+echo "Backup was successfully copied to destination"
+
+# Make a copy of the backup for second instance
+echo "Creating a copy of the backup for second database instance at ${DESTINATION_SERVER_DUPLICATE}"
+ssh -t -i ${KEYFILE} ${DESTINATION_SERVER_USER}@${DESTINATION_SERVER} "cp -r ${DESTINATION_SERVER_PATH} ${DESTINATION_SERVER_DUPLICATE}"
+echo "Backup was successfully duplicated"
+
+##
+# Deploy branch setup
+##
+echo "Stopping mysql BRANCH service"
+systemctl stop mysql-branch.service;
+
+echo "Backing up current mysql BRANCH folder"
+mv /var/lib/mysql-branch /var/lib/mysql-branch-backup;
+
+echo "Copying BRANCH backup to destination"
+mv ${DESTINATION_SERVER_PATH}/ /var/lib/mysql-branch;
+
+echo "Applying user to mysql BRANCH folder"
+chown -R mysql:mysql /var/lib/mysql-branch;
+
+echo "Starting mysql BRANCH service"
+systemctl start mysql-branch.service;
+
+##
+# Deploy branch setup
+##
+echo "Stopping mysql STAGING service"
+systemctl stop mysql-staging.service;
+
+echo "Backing up current mysql STAGING folder"
+mv /var/lib/mysql-staging /var/lib/mysql-staging-backup;
+
+echo "Copying STAGING backup to destination"
+mv ${DESTINATION_SERVER_DUPLICATE}/ /var/lib/mysql-staging;
+
+echo "Applying user to mysql STAGING folder"
+chown -R mysql:mysql /var/lib/mysql-staging;
+
+echo "Starting mysql STAGING service"
+systemctl start mysql-staging.service;
