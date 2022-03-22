@@ -5,3 +5,4 @@ __percona_xtrabackup_key_id: 8507EFA5
 __percona_xtrabackup_repository: "deb http://repo.percona.com/apt {{ ansible_facts['distribution_release'] }} main"
 
 __percona_xtrabackup_package: percona-xtrabackup-24
+__percona_xtrabackup8_package: percona-xtrabackup-80

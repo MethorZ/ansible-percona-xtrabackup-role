@@ -24,7 +24,12 @@
   - name: FACTS - Define Percona XtraBackup package
     set_fact:
       percona_xtrabackup_package: "{{ __percona_xtrabackup_package }}"
-    when: percona_xtrabackup_package is not defined
+    when: percona_xtrabackup_package is not defined and percona_xtrabackup_mysql_version != 8
+
+  - name: FACTS - Define Percona XtraBackup 8 package
+    set_fact:
+      percona_xtrabackup_package: "{{ __percona_xtrabackup8_package }}"
+    when: percona_xtrabackup_package is not defined and percona_xtrabackup_mysql_version == 8
 
   - name: FACTS - Define Percona XtraBackup days to keep
     set_fact:

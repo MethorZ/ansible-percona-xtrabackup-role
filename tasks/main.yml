@@ -29,6 +29,16 @@
         owner: root
         group: root
         mode: 0755
+      when: percona_xtrabackup_mysql_version != 8
+
+    - name: TEMPLATE | Create backup script for cronjob for XtraBackup 8
+      template:
+        src: "backup-8.sh.j2"
+        dest: "{{ percona_xtrabackup_dir }}/backup.sh"
+        owner: root
+        group: root
+        mode: 0755
+      when: percona_xtrabackup_mysql_version == 8
 
     - name: TEMPLATE | Create backup cleanup script for cronjob
       template:
