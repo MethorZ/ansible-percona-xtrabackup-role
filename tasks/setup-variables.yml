@@ -6,30 +6,30 @@
   - name: INCLUDE_VARS | OS specific vars
     include_vars: "{{ ansible_facts['os_family'] }}.yml"
 
-  - name: FACTS - Define keyserver for Percona MySQL
+  - name: FACTS - Define Percona MySQL version
     set_fact:
-      percona_xtrabackup_keyserver: "{{ __percona_xtrabackup_keyserver }}"
-    when: percona_xtrabackup_keyserver is not defined
-
-  - name: FACTS - Define key id for Percona MySQL
-    set_fact:
-      percona_xtrabackup_key_id: "{{ __percona_xtrabackup_key_id }}"
-    when: percona_xtrabackup_key_id is not defined
+      percona_xtrabackup_mysql_version_abs: "{{ percona_xtrabackup_mysql_version | int | abs }}"
+    when: percona_xtrabackup_mysql_version_abs is not defined
 
   - name: FACTS - Define repository for Percona MySQL
     set_fact:
       percona_xtrabackup_repository: "{{ __percona_xtrabackup_repository }}"
     when: percona_xtrabackup_repository is not defined
 
-  - name: FACTS - Define Percona XtraBackup package
+  - name: FACTS - Define package dependencies for Percona MySQL
     set_fact:
-      percona_xtrabackup_package: "{{ __percona_xtrabackup_package }}"
-    when: percona_xtrabackup_package is not defined and percona_xtrabackup_mysql_version != 8
+      percona_xtrabackup_package_dependencies: "{{ __percona_xtrabackup_package_dependencies | list }}"
+    when: percona_xtrabackup_package_dependencies is not defined
 
-  - name: FACTS - Define Percona XtraBackup 8 package
+  - name: FACTS - Define command to enable Percona MySQL 8 repository
     set_fact:
-      percona_xtrabackup_package: "{{ __percona_xtrabackup8_package }}"
-    when: percona_xtrabackup_package is not defined and percona_xtrabackup_mysql_version == 8
+      percona_xtrabackup_enable_repository: "{{ __percona_xtrabackup_8_enable_repository }}"
+    when: percona_xtrabackup_enable_repository is not defined and percona_xtrabackup_mysql_version_abs == "8"
+
+  - name: FACTS - Define Percona MySQL 8 packages
+    set_fact:
+      percona_xtrabackup_package: "{{ __percona_xtrabackup_8_package | list }}"
+    when: percona_xtrabackup_package is not defined and percona_xtrabackup_mysql_version_abs == "8"
 
   - name: FACTS - Define Percona XtraBackup days to keep
     set_fact:

@@ -1,8 +1,8 @@
 ---
-# Enable xtrabackuo
+# Enable xtrabackup
 percona_xtrabackup_enabled: false
 
-percona_xtrabackup_mysql_version: 5
+percona_xtrabackup_mysql_version: 8.0
 
 # Packages mode
 percona_xtrabackup_packages_mode: present

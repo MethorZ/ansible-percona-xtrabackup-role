@@ -1,0 +1,60 @@
+---
+##
+# Set up xtrabackup
+##
+- block:
+    - name: FILE | Make sure the backup directory exists
+      file:
+        path: "{{ percona_xtrabackup_dir }}"
+        state: directory
+        mode: 0700
+        owner: root
+
+    - name: TEMPLATE | Create backup script for cronjob for XtraBackup 8
+      template:
+        src: "backup.sh.j2"
+        dest: "{{ percona_xtrabackup_dir }}/backup.sh"
+        owner: root
+        group: root
+        mode: 0755
+      when: percona_xtrabackup_mysql_version_abs == "8"
+
+    - name: TEMPLATE | Create backup cleanup script for cronjob
+      template:
+        src: "clean.sh.j2"
+        dest: "{{ percona_xtrabackup_dir }}/clean.sh"
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: CRON | Make sure cronjob for backup exists
+      cron:
+        name: "Create xtrabackup"
+        minute: "{{ percona_xtrabackup_cron.minute }}"
+        hour: "{{ percona_xtrabackup_cron.hour }}"
+        day: "{{ percona_xtrabackup_cron.day }}"
+        month: "{{ percona_xtrabackup_cron.month }}"
+        weekday: "{{ percona_xtrabackup_cron.weekday }}"
+        job: "{{ percona_xtrabackup_backup_command }}"
+
+    - name: CRON | Make sure cronjob for backup cleanup exists
+      cron:
+        name: "Clean up xtrabackups"
+        minute: "{{ percona_xtrabackup_cleanup_cron.minute }}"
+        hour: "{{ percona_xtrabackup_cleanup_cron.hour }}"
+        day: "{{ percona_xtrabackup_cleanup_cron.day }}"
+        month: "{{ percona_xtrabackup_cleanup_cron.month }}"
+        weekday: "{{ percona_xtrabackup_cleanup_cron.weekday }}"
+        job: "{{ percona_xtrabackup_cleanup_command }}"
+
+    - name: CRON | Make sure cronjob for binlog backup exists (uses rsync)
+      cron:
+        name: "Backup binlogs via rsync"
+        minute: "{{ percona_xtrabackup_binlog_backup_cron.minute }}"
+        hour: "{{ percona_xtrabackup_binlog_backup_cron.hour }}"
+        day: "{{ percona_xtrabackup_binlog_backup_cron.day }}"
+        month: "{{ percona_xtrabackup_binlog_backup_cron.month }}"
+        weekday: "{{ percona_xtrabackup_binlog_backup_cron.weekday }}"
+        job: "{{ percona_xtrabackup_binlog_backup_command }}"
+
+  when: percona_xtrabackup_enabled

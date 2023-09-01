@@ -1,7 +1,7 @@
 galaxy_info:
-  role_name: xtrabackup
+  role_name: methorz.percona_xtrabackup
   author: MethorZ
-  description: Ansible percona xtrabackup role
+  description: Ansible Percona XtraBackup role for MySQL 8 backups
   company: MethorZ
   license: license (BSD, MIT)
   min_ansible_version: 2.5

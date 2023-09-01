@@ -1,8 +1,16 @@
 ---
-# Repository, keyserver and key id
-__percona_xtrabackup_keyserver: hkp://keyserver.ubuntu.com:80
-__percona_xtrabackup_key_id: 8507EFA5
-__percona_xtrabackup_repository: "deb http://repo.percona.com/apt {{ ansible_facts['distribution_release'] }} main"
+##
+# Percona MySQL 8 Debian configuration
+##
+__percona_xtrabackup_repository: "https://repo.percona.com/apt/percona-release_latest.generic_all.deb"
 
-__percona_xtrabackup_package: percona-xtrabackup-24
-__percona_xtrabackup8_package: percona-xtrabackup-80
+# Additional dependencies
+__percona_xtrabackup_package_dependencies:
+  - gnupg2
+  - lsb-release
+
+# Enable the percona mysql 8 repository
+__percona_xtrabackup_8_enable_repository: "percona-release setup ps80"
+
+__percona_xtrabackup_8_package:
+  - percona-xtrabackup-80

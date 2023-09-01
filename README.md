@@ -1,7 +1,7 @@
 ansible-xtrabackup-role
 =========
 
-Ansible role to handle database backups via xtrabackup.
+Ansible role to handle database backups via Percona XtraBackup for Percona MySQL 8 on Debian
 
 Requirements
 ------------
@@ -12,8 +12,10 @@ Role Variables
 --------------
 
 ```YAML
-# Enable xtrabackuo
+# Enable xtrabackup
 percona_xtrabackup_enabled: false
+
+percona_xtrabackup_mysql_version: 8.0
 
 # Packages mode
 percona_xtrabackup_packages_mode: latest
@@ -28,18 +30,18 @@ percona_xtrabackup_days_to_keep: 2
 percona_xtrabackup_binary_log_dir: /var/log/mysql
 
 ##
-# Set up cron jobs for backup, cleanup and binlog rsync
+# Default crontab settings
 ##
 
-# Create xtrabackup cron job
+# Backups starting at midnight every day
 percona_xtrabackup_cron:
   minute: "0"
-  hour: "4"
+  hour: "0"
   day: "*"
   month: "*"
   weekday: "*"
 
-# Create cleanup for backups cron job
+# Removal of old backups at 6 AM every day
 percona_xtrabackup_cleanup_cron:
   minute: "0"
   hour: "6"
@@ -47,13 +49,14 @@ percona_xtrabackup_cleanup_cron:
   month: "*"
   weekday: "*"
 
-# Create binlog rsync backup
+# Backup binary logs every 5 minutes
 percona_xtrabackup_binlog_backup_cron:
   minute: "*/5"
   hour: "*"
   day: "*"
   month: "*"
   weekday: "*"
+
 
 ```
 

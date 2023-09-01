@@ -2,6 +2,7 @@
 ##
 # Ansible managed file - DO NOT EDIT!
 ##
-/usr/bin/innobackupex --user={{ percona_xtrabackup_user }} {{ percona_xtrabackup_dir }}
-LATEST_BACKUP=$(ls -td /backup/mysql/20*/ | head -1)
+currentDate=$(date +'%Y-%m-%d-%H-%M-%S')
+xtrabackup --backup --user={{ percona_xtrabackup_user }} --target-dir={{ percona_xtrabackup_dir }}/"${currentDate}"
+LATEST_BACKUP=$(ls -td {{ percona_xtrabackup_dir }}/20*/ | head -1)
 xtrabackup --prepare --target-dir=$LATEST_BACKUP

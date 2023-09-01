@@ -1,8 +1,0 @@
-#!/bin/sh
-##
-# Ansible managed file - DO NOT EDIT!
-##
-currentDate=$(date +'%Y-%m-%d-%H-%M-%S')
-xtrabackup --backup --user=root --target-dir="${currentDate}"
-LATEST_BACKUP=$(ls -td /backup/mysql/20*/ | head -1)
-xtrabackup --prepare --target-dir=$LATEST_BACKUP
